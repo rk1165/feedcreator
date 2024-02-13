@@ -1,0 +1,27 @@
+{{define "title"}}Feeds{{end}}
+
+{{define "main"}}
+    <h2>Your Latest Feeds</h2>
+    {{if .Feeds}}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Created</th>
+            </tr>
+            {{range .Feeds}}
+                <tr>
+                    <td>#{{.ID}}</td>
+                    <td><a href="/feed/view/{{.ID}}">{{.Title}}</a></td>
+                    <td><a href="/static/rss/{{.Name}}">{{.Name}}</a></td>
+                    <td><a href="{{.Url}}">{{.Url}}</a></td>
+                    <td>{{humanDate .Created}}</td>
+                </tr>
+            {{end}}
+        </table>
+    {{else}}
+        <p>There's nothing to see here yet!</p>
+    {{end}}
+{{end}}

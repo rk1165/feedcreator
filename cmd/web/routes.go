@@ -1,23 +1,32 @@
 package main
 
-import "net/http"
+import (
+	"github.com/justinas/alice"
+	"github.com/rk1165/feedcreator/ui"
+	"io/fs"
+	"net/http"
+)
 
-func (app *application) routes() *http.ServeMux {
-
+func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
-	fileServer := http.FileServer(neuteredFileSystem{fs: http.Dir("./ui/static")})
-	mux.Handle("GET /static", http.NotFoundHandler())
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
+	staticFiles, _ := fs.Sub(ui.Files, "static")
+	fileServer := http.FileServer(http.FS(staticFiles))
+	mux.Handle("GET /static/", http.StripPrefix("/static/", fileServer))
+
+	feedServer := http.FileServer(http.Dir("./rss"))
+	mux.Handle("GET /rss/", http.StripPrefix("/rss/", feedServer))
 
 	mux.HandleFunc("GET /", app.home)
-	mux.HandleFunc("POST /feed/add", app.addFeed)
-	mux.HandleFunc("GET /feed/view", app.viewFeed)
+	mux.HandleFunc("GET /feed/create", app.feedCreate)
+	mux.HandleFunc("POST /feed/create", app.feedCreatePost)
+	mux.HandleFunc("GET /feed/view/:id", app.viewFeed)
 	mux.HandleFunc("GET /feeds", app.allFeeds)
+
 	//mux.HandleFunc("/feed/{id}/delete", app.delete)
 	//mux.HandleFunc("/feed/{id}/update", app.update)
 	//mux.HandleFunc("/feed/{id}/save", app.save)
 
-	return mux
-
+	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
+	return standard.Then(mux)
 }

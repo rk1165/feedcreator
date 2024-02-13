@@ -1,0 +1,67 @@
+{{define "title"}}Create a new Feed{{end}}
+
+{{define "main"}}
+    <form action="/feed/create" method="POST">
+        <div>
+            <label>Title:</label>
+            {{with .Form.FieldErrors.title}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="title" value="{{.Form.Title}}">
+        </div>
+        <div>
+            <label>URL:</label>
+            {{with .Form.FieldErrors.url}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="url" value="{{.Form.URL}}">
+        </div>
+        <div>
+            <label>Description:</label>
+            {{with .Form.FieldErrors.url}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="desc" value="{{.Form.Description}}">
+        </div>
+        <div>
+            <label>Name:</label>
+            {{with .Form.FieldErrors.name}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="name" value="{{.Form.Name}}">
+        </div>
+
+        <h2>Extraction Parameters</h2>
+        <div>
+            <label>Item Selector:</label>
+            {{with .Form.FieldErrors.itemSelector}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="item_elem" value="{{.Form.ItemSelector}}">
+        </div>
+        <div>
+            <label>Title Selector:</label>
+            {{with .Form.FieldErrors.titleSelector}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="title_elem" value="{{.Form.TitleSelector}}">
+        </div>
+        <div>
+            <label>Link Selector:</label>
+            {{with .Form.FieldErrors.linkSelector}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="link_elem" value="{{.Form.LinkSelector}}">
+        </div>
+        <div>
+            <label>Description Tag:</label>
+            {{with .Form.FieldErrors.descSelector}}
+                <label class="error">{{.}}</label>
+            {{end}}
+            <input type="text" name="desc_tag" value="{{.Form.DescSelector}}">
+        </div>
+        <div>
+            <input type="submit" value="Create Feed">
+        </div>
+    </form>
+{{end}}

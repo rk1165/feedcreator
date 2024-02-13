@@ -1,0 +1,19 @@
+{{define "title"}}Feed #{{.Feed.ID}} {{end}}
+
+{{define "main"}}
+    {{with .Feed}}
+        <div class="snippet">
+            <div class="metadata">
+                <strong>{{.Title}}</strong>
+                <span>#{{.ID}}</span>
+            </div>
+            <pre>Name: <code>{{.Name}}</code></pre>
+            <pre>URL: <code>{{.URL}}</code></pre>
+            <pre>Description: <code>{{.Description}}</code></pre>
+            <pre></pre>
+            <div class="metadata">
+                <time>Created: {{humanDate .Created}}</time>
+            </div>
+        </div>
+    {{end}}
+{{end}}

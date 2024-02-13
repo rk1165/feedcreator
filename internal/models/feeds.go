@@ -6,22 +6,25 @@ import (
 	"time"
 )
 
+type FeedModelInterface interface {
+	Insert(feed *Feed) (int, error)
+	GetByName(name string) (*Feed, error)
+	GetById(id int) (*Feed, error)
+	All() ([]*Feed, error)
+}
+
 // Feed type to hold the data for an individual feed.
 type Feed struct {
-	ID             int
-	Title          string
-	Name           string
-	URL            string
-	Description    string
-	ItemTag        string
-	ItemCls        string
-	TitleTag       string
-	TitleCls       string
-	LinkTag        string
-	LinkCls        string
-	DescriptionTag string
-	DescriptionCls string
-	Created        time.Time
+	ID            int
+	Title         string
+	Url           string
+	Description   string
+	Name          string
+	ItemSelector  string
+	TitleSelector string
+	LinkSelector  string
+	DescSelector  string
+	Created       time.Time
 }
 
 // FeedModel a type which wraps a sql.DB connection pool
@@ -30,14 +33,13 @@ type FeedModel struct {
 }
 
 // Insert will insert a Feed into the DB
-func (m *FeedModel) Insert(title, name, url, description, itemTag, itemCls,
-	titleTag, titleCls, linkTag, linkCls, descriptionTag, descriptionCls string) (int, error) {
+func (m *FeedModel) Insert(feed *Feed) (int, error) {
 	stmt := `INSERT INTO feed (title, name, url, description,
-			 item_tag, item_cls, title_tag, title_cls, link_tag, link_cls, description_tag, description_cls, created)
-			 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())`
+			 item_selector, title_selector,  link_selector, desc_selector)
+			 VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
 
-	result, err := m.DB.Exec(stmt, title, name, url, description, itemTag, itemCls,
-		titleTag, titleCls, linkTag, linkCls, descriptionTag, descriptionCls)
+	result, err := m.DB.Exec(stmt, feed.Title, feed.Name, feed.Url, feed.Description,
+		feed.ItemSelector, feed.TitleSelector, feed.LinkSelector, feed.DescSelector)
 	if err != nil {
 		return 0, err
 	}
@@ -48,17 +50,39 @@ func (m *FeedModel) Insert(title, name, url, description, itemTag, itemCls,
 	return int(id), nil
 }
 
-func (m *FeedModel) Get(id int) (*Feed, error) {
-	stmt := `SELECT id, title, name, url, description,
-			 item_tag, item_cls, title_tag, title_cls, link_tag, link_cls, description_tag, description_cls
-			 FROM feed WHERE id = ?`
+func (m *FeedModel) GetByName(name string) (*Feed, error) {
+	stmt := `SELECT id, title, name, url, description, item_selector, title_selector,
+			 link_selector, desc_selector, created
+			 FROM feed WHERE name = ?`
+
+	row := m.DB.QueryRow(stmt, name)
+
+	feed := &Feed{}
+	err := row.Scan(&feed.ID, &feed.Title, &feed.Name, &feed.Url, &feed.Description,
+		&feed.ItemSelector, &feed.TitleSelector,
+		&feed.LinkSelector, &feed.DescSelector, &feed.Created)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+	return feed, nil
+}
+
+func (m *FeedModel) GetById(id int) (*Feed, error) {
+	stmt := `SELECT id, title, name, url, description, item_selector, title_selector,
+			 link_selector, desc_selector, created
+			 FROM feed WHERE name = ?`
 
 	row := m.DB.QueryRow(stmt, id)
 
 	feed := &Feed{}
-	err := row.Scan(&feed.ID, &feed.Title, &feed.Name, &feed.URL, &feed.Description,
-		&feed.ItemTag, &feed.ItemCls, &feed.TitleTag, &feed.TitleCls,
-		&feed.LinkTag, &feed.LinkCls, &feed.DescriptionTag, &feed.DescriptionCls)
+	err := row.Scan(&feed.ID, &feed.Title, &feed.Name, &feed.Url, &feed.Description,
+		&feed.ItemSelector, &feed.TitleSelector,
+		&feed.LinkSelector, &feed.DescSelector, &feed.Created)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -72,7 +96,7 @@ func (m *FeedModel) Get(id int) (*Feed, error) {
 
 func (m *FeedModel) All() ([]*Feed, error) {
 	stmt := `SELECT id, title, name, url, description,
-			 item_tag, item_cls, title_tag, title_cls, link_tag, link_cls, description_tag, description_cls
+			 item_selector, title_selector, link_selector, desc_selector, created
 			 FROM feed ORDER BY id DESC`
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -84,9 +108,9 @@ func (m *FeedModel) All() ([]*Feed, error) {
 
 	for rows.Next() {
 		feed := &Feed{}
-		err = rows.Scan(&feed.ID, &feed.Title, &feed.Name, &feed.URL, &feed.Description,
-			&feed.ItemTag, &feed.ItemCls, &feed.TitleTag, &feed.TitleCls,
-			&feed.LinkTag, &feed.LinkCls, &feed.DescriptionTag, &feed.DescriptionCls)
+		err = rows.Scan(&feed.ID, &feed.Title, &feed.Name, &feed.Url, &feed.Description,
+			&feed.ItemSelector, &feed.TitleSelector,
+			&feed.LinkSelector, &feed.DescSelector, &feed.Created)
 
 		if err != nil {
 			return nil, err
@@ -99,10 +123,10 @@ func (m *FeedModel) All() ([]*Feed, error) {
 	return feeds, nil
 }
 
-func (m *FeedModel) Update() (*Feed, error) {
-	return nil, nil
-}
+//func (m *FeedModel) Update() (*Feed, error) {
+//	return nil, nil
+//}
 
-func (m *FeedModel) Delete() error {
-	return nil
-}
+//func (m *FeedModel) Delete() error {
+//	return nil
+//}

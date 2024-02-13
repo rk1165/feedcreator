@@ -1,24 +1,17 @@
-CREATE DATABASE feeds CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+drop table if exists feed;
 
-USE feeds;
-
-CREATE TABLE feed
+create table feed
 (
-    id              INTEGER             NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    title           VARCHAR(300)        NOT NULL,
-    name            VARCHAR(100) UNIQUE NOT NULL,
-    url             VARCHAR(300) UNIQUE NOT NULL,
-    description     TEXT,
-    item_tag        VARCHAR(100)        NOT NULL,
-    item_cls        VARCHAR(100)        NOT NULL,
-    title_tag       VARCHAR(100)        NOT NULL,
-    title_cls       VARCHAR(100),
-    link_tag        VARCHAR(10)         NOT NULL,
-    link_cls        VARCHAR(100),
-    description_tag VARCHAR(100),
-    description_cls VARCHAR(100),
-    created         DATETIME            NOT NULL
+    id             integer primary key,
+    title          text                                not null,
+    name           text unique                         not null,
+    url            text unique                         not null,
+    description    text,
+    item_selector  text                                not null,
+    title_selector text                                not null,
+    link_selector  text                                not null,
+    desc_selector  text,
+    created        TIMESTAMP DEFAULT CURRENT_TIMESTAMP not null
 );
 
-CREATE INDEX idx_feed_name ON feed (name);
-
+create index feed_name_idx on feed (name);

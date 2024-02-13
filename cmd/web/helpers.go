@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
+	"github.com/go-playground/form/v4"
 	"net/http"
-	"path/filepath"
 	"runtime/debug"
+	"time"
 )
 
 // serverError helper writes an error message and stacktrace to the errorLog
@@ -27,28 +30,52 @@ func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
 }
 
-type neuteredFileSystem struct {
-	fs http.FileSystem
+func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
+	ts, ok := app.templateCache[page]
+	if !ok {
+		err := fmt.Errorf("the template %s does not exist", page)
+		app.serverError(w, err)
+		return
+	}
+
+	buf := new(bytes.Buffer)
+	err := ts.ExecuteTemplate(buf, "base", data)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	w.WriteHeader(status)
+	buf.WriteTo(w)
 }
 
-// Open gets called each time our http.FileServer receives a request
-func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
-	f, err := nfs.fs.Open(path)
+func (app *application) newTemplateData(w http.ResponseWriter, r *http.Request) *templateData {
+	session, _ := app.session.Get(r, "flash-session")
+	flash, ok := session.Values["flash"].(string)
+	if ok {
+		delete(session.Values, "flash")
+		session.Save(r, w)
+	}
+	return &templateData{
+		CurrentYear: time.Now().Year(),
+		Flash:       flash,
+	}
+}
+
+// decodePostForm helper method
+func (app *application) decodePostForm(r *http.Request, dest any) error {
+	err := r.ParseForm()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	s, err := f.Stat()
-	if s.IsDir() {
-		// if it's a directory, try to open index.html
-		index := filepath.Join(path, "index.html")
-		if _, err := nfs.fs.Open(index); err != nil {
-			closeErr := f.Close()
-			if closeErr != nil {
-				return nil, closeErr
-			}
-			return nil, err
+	err = app.formDecoder.Decode(dest, r.PostForm)
+	if err != nil {
+		var invalidDecoderError *form.InvalidDecoderError
+		if errors.As(err, &invalidDecoderError) {
+			panic(err)
 		}
+		return err
 	}
-	return f, nil
+	return nil
 }
