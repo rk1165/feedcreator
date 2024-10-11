@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/rk1165/feedcreator/internal/models"
-	"github.com/rk1165/feedcreator/internal/scraper"
 	"github.com/rk1165/feedcreator/internal/validator"
+	"github.com/rk1165/feedcreator/pkg/rssfeed"
 	"net/http"
 	"strconv"
 )
@@ -57,7 +57,7 @@ func (app *application) feedCreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	feed, err := app.feeds.GetByName(form.Name)
+	feed, err := app.feeds.GetByName(form.Name + ".xml")
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.infoLog.Printf("Feed %s does not exist", form.Name)
@@ -67,28 +67,35 @@ func (app *application) feedCreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if feed != nil {
-		app.infoLog.Printf("feed with name %s already exists", form.Name)
-		http.Redirect(w, r, "/feeds/", http.StatusSeeOther)
+		app.infoLog.Printf("feed with name %s already exists. Redirecting to it", form.Name)
+		http.Redirect(w, r, fmt.Sprintf("/feed/view?id=%d", feed.ID), http.StatusSeeOther)
+		return
 	}
 
 	feed = &models.Feed{Title: form.Title, Name: form.Name + ".xml", Url: form.URL, Description: form.Description,
 		ItemSelector: form.ItemSelector, TitleSelector: form.TitleSelector, LinkSelector: form.LinkSelector,
 		DescSelector: form.DescSelector}
 
-	scraper.CreateFeedFile(feed)
+	session, _ := app.session.Get(r, "flash-session")
 
-	id, err := app.feeds.Insert(feed)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	app.infoLog.Printf("created feed with id %d", id)
-	// Redirect the user to the relevant page for the feed
-	http.Redirect(w, r, fmt.Sprintf("/feed/view/%d", id), http.StatusSeeOther)
+	go func() {
+		rssfeed.CreateFeedFile(feed)
+		id, err := app.feeds.Insert(feed)
+		if err != nil {
+			app.serverError(w, err)
+			return
+		}
+		app.infoLog.Printf("created feed with id %d", id)
+	}()
+
+	session.Values["flash"] = fmt.Sprintf("Creating feed for %s", form.URL)
+	session.Save(r, w)
+
+	data := app.newTemplateData(w, r)
+	app.render(w, http.StatusOK, "feeds.tmpl", data)
 }
 
 func (app *application) viewFeed(w http.ResponseWriter, r *http.Request) {
-	app.infoLog.Println("GET params were:", r.URL.Path)
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		app.notFound(w)
@@ -123,3 +130,22 @@ func (app *application) allFeeds(w http.ResponseWriter, r *http.Request) {
 }
 
 // TODO : Create go workers for fetching and updating the feeds at regular interval
+func (app *application) updateFeeds(w http.ResponseWriter, r *http.Request) {
+	feeds, err := app.feeds.All()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	app.infoLog.Printf("Current Feed count=%d", len(feeds))
+	rssfeed.UpdateFeeds(feeds)
+}
+
+func (app *application) cleanFeeds(w http.ResponseWriter, r *http.Request) {
+	feeds, err := app.feeds.All()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	app.infoLog.Printf("Current Feed count=%d", len(feeds))
+	rssfeed.CleanFeeds(feeds)
+}

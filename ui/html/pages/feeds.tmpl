@@ -14,7 +14,7 @@
             {{range .Feeds}}
                 <tr>
                     <td>#{{.ID}}</td>
-                    <td><a href="/feed/view/{{.ID}}">{{.Title}}</a></td>
+                    <td><a href="/feed/view?id={{.ID}}">{{.Title}}</a></td>
                     <td><a href="/static/rss/{{.Name}}">{{.Name}}</a></td>
                     <td><a href="{{.Url}}">{{.Url}}</a></td>
                     <td>{{humanDate .Created}}</td>

@@ -7,10 +7,10 @@ import (
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rk1165/feedcreator/internal/models"
+	"github.com/rk1165/feedcreator/pkg/logger"
 	"html/template"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -29,24 +29,21 @@ func main() {
 	dbName := flag.String("db", "feeds.db", "SQLite Datasource name")
 	flag.Parse()
 
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
 	db, err := sql.Open("sqlite3", *dbName)
 	if err != nil {
-		errorLog.Fatal(err)
+		logger.ErrorLog.Fatal(err)
 	}
 
 	defer db.Close()
 
 	templateCache, err := newTemplateCache()
 	if err != nil {
-		errorLog.Fatal(err)
+		logger.ErrorLog.Fatal(err)
 	}
 
 	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
+		errorLog:      logger.ErrorLog,
+		infoLog:       logger.InfoLog,
 		feeds:         &models.FeedModel{DB: db},
 		templateCache: templateCache,
 		formDecoder:   form.NewDecoder(),
@@ -55,14 +52,14 @@ func main() {
 
 	server := &http.Server{
 		Addr:         *addr,
-		ErrorLog:     errorLog,
+		ErrorLog:     logger.ErrorLog,
 		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
 
-	infoLog.Printf("Starting server on %s", *addr)
+	logger.InfoLog.Printf("Starting server on %s", *addr)
 	err = server.ListenAndServe()
-	errorLog.Fatal(err)
+	logger.ErrorLog.Fatal(err)
 }

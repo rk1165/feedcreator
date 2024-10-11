@@ -75,7 +75,7 @@ func (m *FeedModel) GetByName(name string) (*Feed, error) {
 func (m *FeedModel) GetById(id int) (*Feed, error) {
 	stmt := `SELECT id, title, name, url, description, item_selector, title_selector,
 			 link_selector, desc_selector, created
-			 FROM feed WHERE name = ?`
+			 FROM feed WHERE id = ?`
 
 	row := m.DB.QueryRow(stmt, id)
 

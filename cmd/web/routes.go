@@ -20,8 +20,10 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /", app.home)
 	mux.HandleFunc("GET /feed/create", app.feedCreate)
 	mux.HandleFunc("POST /feed/create", app.feedCreatePost)
-	mux.HandleFunc("GET /feed/view/:id", app.viewFeed)
+	mux.HandleFunc("GET /feed/view/", app.viewFeed)
 	mux.HandleFunc("GET /feeds", app.allFeeds)
+	mux.HandleFunc("GET /update", app.updateFeeds)
+	mux.HandleFunc("GET /clean", app.cleanFeeds)
 
 	//mux.HandleFunc("/feed/{id}/delete", app.delete)
 	//mux.HandleFunc("/feed/{id}/update", app.update)
