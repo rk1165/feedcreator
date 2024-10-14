@@ -3,6 +3,8 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	"github.com/rk1165/feedcreator/pkg/logger"
 	"time"
 )
 
@@ -10,6 +12,7 @@ type FeedModelInterface interface {
 	Insert(feed *Feed) (int, error)
 	GetByName(name string) (*Feed, error)
 	GetById(id int) (*Feed, error)
+	Delete(id int) error
 	All() ([]*Feed, error)
 }
 
@@ -127,6 +130,18 @@ func (m *FeedModel) All() ([]*Feed, error) {
 //	return nil, nil
 //}
 
-//func (m *FeedModel) Delete() error {
-//	return nil
-//}
+func (m *FeedModel) Delete(id int) error {
+	stmt := `DELETE FROM feed WHERE id = ?`
+	rows, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		err := fmt.Errorf("failed to delete feed with id %d: %v", id, err)
+		return err
+	}
+	affected, err := rows.RowsAffected()
+	if err != nil {
+		err := fmt.Errorf("failed to delete feed with id %d: %v", id, err)
+		return err
+	}
+	logger.InfoLog.Printf("%d rows deleted", affected)
+	return nil
+}

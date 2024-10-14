@@ -10,10 +10,18 @@
             <pre>Name: <code><a href="/static/rss/{{.Name}}">{{.Name}}</a></code></pre>
             <pre>URL: <code><a href="{{.Url}}">{{.Url}}</a></code></pre>
             <pre>Description: <code>{{.Description}}</code></pre>
+            <pre>Item Selector : <code>{{.ItemSelector}}</code></pre>
+            <pre>Title Selector: <code>{{.TitleSelector}}</code></pre>
+            <pre>Link Selector : <code>{{.LinkSelector}}</code></pre>
+            <pre>Desc Selector : <code>{{.DescSelector}}</code></pre>
             <pre></pre>
             <div class="metadata">
                 <time>Created: {{humanDate .Created}}</time>
             </div>
         </div>
     {{end}}
+
+    <div class="button-container">
+        <button onclick="confirmDelete('{{.Feed.ID}}')" class="btn btn-danger">Delete</button>
+    </div>
 {{end}}

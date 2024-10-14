@@ -7,6 +7,7 @@ import (
 	"github.com/rk1165/feedcreator/internal/validator"
 	"github.com/rk1165/feedcreator/pkg/rssfeed"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -117,6 +118,34 @@ func (app *application) viewFeed(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "view.tmpl", data)
 }
 
+func (app *application) deleteFeed(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+	feed, _ := app.feeds.GetById(id)
+	err = app.feeds.Delete(id)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = os.Remove(fmt.Sprintf("./ui/static/rss/%s", feed.Name))
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	app.infoLog.Printf("removed feed file %s", feed.Name)
+
+	session, _ := app.session.Get(r, "flash-session")
+	session.Values["flash"] = fmt.Sprintf("Deleted feed with id=%s", feed.Name)
+	_ = session.Save(r, w)
+
+	data := app.newTemplateData(w, r)
+	app.render(w, http.StatusOK, "feeds.tmpl", data)
+}
+
 func (app *application) allFeeds(w http.ResponseWriter, r *http.Request) {
 	feeds, err := app.feeds.All()
 	if err != nil {
@@ -129,7 +158,6 @@ func (app *application) allFeeds(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "feeds.tmpl", data)
 }
 
-// TODO : Create go workers for fetching and updating the feeds at regular interval
 func (app *application) updateFeeds(w http.ResponseWriter, r *http.Request) {
 	app.infoLog.Println("Running updateFeeds")
 	feeds, err := app.feeds.All()
