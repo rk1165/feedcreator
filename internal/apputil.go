@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"github.com/rk1165/feedcreator/internal/models"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 func ReadRSSFeedFile(feedName string) (*models.RSS, error) {
@@ -48,4 +50,17 @@ func WriteRSSFeedFile(feedName string, rss *models.RSS) error {
 		return err
 	}
 	return nil
+}
+
+func ScheduleFunc(interval time.Duration, task func(w http.ResponseWriter, r *http.Request)) {
+	go func() {
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ticker.C:
+				task(nil, nil)
+			}
+		}
+	}()
 }

@@ -131,6 +131,7 @@ func (app *application) allFeeds(w http.ResponseWriter, r *http.Request) {
 
 // TODO : Create go workers for fetching and updating the feeds at regular interval
 func (app *application) updateFeeds(w http.ResponseWriter, r *http.Request) {
+	app.infoLog.Println("Running updateFeeds")
 	feeds, err := app.feeds.All()
 	if err != nil {
 		app.serverError(w, err)
@@ -141,6 +142,7 @@ func (app *application) updateFeeds(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) cleanFeeds(w http.ResponseWriter, r *http.Request) {
+	app.infoLog.Println("Running cleanFeeds")
 	feeds, err := app.feeds.All()
 	if err != nil {
 		app.serverError(w, err)

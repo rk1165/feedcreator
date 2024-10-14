@@ -6,6 +6,7 @@ import (
 	"github.com/go-playground/form/v4"
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/rk1165/feedcreator/internal"
 	"github.com/rk1165/feedcreator/internal/models"
 	"github.com/rk1165/feedcreator/pkg/logger"
 	"html/template"
@@ -58,6 +59,9 @@ func main() {
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
+
+	internal.ScheduleFunc(60*time.Second, app.cleanFeeds)
+	internal.ScheduleFunc(90*time.Second, app.updateFeeds)
 
 	logger.InfoLog.Printf("Starting server on %s", *addr)
 	err = server.ListenAndServe()
