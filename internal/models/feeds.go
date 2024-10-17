@@ -107,7 +107,7 @@ func (m *FeedModel) All() ([]*Feed, error) {
 	}
 	defer rows.Close()
 
-	feeds := []*Feed{}
+	var feeds []*Feed
 
 	for rows.Next() {
 		feed := &Feed{}
@@ -125,10 +125,6 @@ func (m *FeedModel) All() ([]*Feed, error) {
 	}
 	return feeds, nil
 }
-
-//func (m *FeedModel) Update() (*Feed, error) {
-//	return nil, nil
-//}
 
 func (m *FeedModel) Delete(id int) error {
 	stmt := `DELETE FROM feed WHERE id = ?`
