@@ -9,14 +9,14 @@ import (
 )
 
 func CleanFeeds(feeds []*models.Feed) {
-	logger.InfoLog.Println("Started Cleaning feeds")
+	logger.InfoLog.Println("Started Cleaning all feeds")
 	var wg sync.WaitGroup
 	for _, feed := range feeds {
 		wg.Add(1)
 		go cleanFeed(feed, &wg)
 	}
 	wg.Wait()
-	logger.InfoLog.Println("Finished Cleaning feeds")
+	logger.InfoLog.Println("Finished Cleaning all feeds")
 }
 
 func cleanFeed(feed *models.Feed, wg *sync.WaitGroup) {
@@ -31,6 +31,7 @@ func cleanFeed(feed *models.Feed, wg *sync.WaitGroup) {
 	var newItems []models.Item
 
 	for _, item := range *rss.Channel.Items {
+		// Days can be changed here
 		if !isItemDaysOld(item, 3) {
 			newItems = append(newItems, item)
 		}

@@ -20,12 +20,19 @@ var mockFeed = &models.Feed{
 type FeedModel struct {
 }
 
-func (m *FeedModel) Insert(title, name, url, description, itemSelector, titleSelector,
-	linkSelector, descSelector string) (int, error) {
+func (m *FeedModel) Insert(feed *models.Feed) (int, error) {
 	return 2, nil
 }
 
-func (m *FeedModel) Get(id int) (*models.Feed, error) {
+func (m *FeedModel) GetByName(name string) (*models.Feed, error) {
+	switch name {
+	case "example.xml":
+		return mockFeed, nil
+	default:
+		return nil, models.ErrNoRecord
+	}
+}
+func (m *FeedModel) GetById(id int) (*models.Feed, error) {
 	switch id {
 	case 1:
 		return mockFeed, nil
@@ -36,5 +43,13 @@ func (m *FeedModel) Get(id int) (*models.Feed, error) {
 
 func (m *FeedModel) All() ([]*models.Feed, error) {
 	return []*models.Feed{mockFeed}, nil
+}
 
+func (m *FeedModel) Delete(id int) error {
+	switch id {
+	case 1:
+		return nil
+	default:
+		return models.ErrNoRecord
+	}
 }

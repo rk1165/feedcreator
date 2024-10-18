@@ -1,0 +1,19 @@
+FROM golang:1.23.0
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY cmd ./cmd
+COPY internal ./internal
+COPY pkg ./pkg
+COPY ui ./ui
+COPY sql ./sql
+COPY Makefile ./
+COPY feeds.db ./
+
+RUN CGO_ENABLED=0 GOOS=linux make build
+
+CMD ["/feedcreator"]

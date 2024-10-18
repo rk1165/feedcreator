@@ -8,14 +8,14 @@ import (
 )
 
 func UpdateFeeds(feeds []*models.Feed) {
-	logger.InfoLog.Println("Started Updating feeds")
+	logger.InfoLog.Println("Started Updating all feeds")
 	var wg sync.WaitGroup
 	for _, feed := range feeds {
 		wg.Add(1)
 		go updateFeed(feed, &wg)
 	}
 	wg.Wait()
-	logger.InfoLog.Println("Finished Updating feeds")
+	logger.InfoLog.Println("Finished Updating all feeds")
 }
 
 func updateFeed(feed *models.Feed, wg *sync.WaitGroup) {
@@ -32,7 +32,7 @@ func updateFeed(feed *models.Feed, wg *sync.WaitGroup) {
 	logger.InfoLog.Printf("Before updating item_counts=%d for feed=%s", len(*rss.Channel.Items), feed.Name)
 	guids := getGUIDs(*rss.Channel.Items)
 
-	for _, item := range items {
+	for _, item := range *items {
 		if _, ok := guids[item.GUID]; !ok {
 			*rss.Channel.Items = append(*rss.Channel.Items, item)
 		}

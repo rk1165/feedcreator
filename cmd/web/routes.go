@@ -14,12 +14,9 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.FS(staticFiles))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fileServer))
 
-	feedServer := http.FileServer(http.Dir("./rss"))
-	mux.Handle("GET /rss/", http.StripPrefix("/rss/", feedServer))
-
 	mux.HandleFunc("GET /", app.home)
-	mux.HandleFunc("GET /feed/create", app.feedCreate)
-	mux.HandleFunc("POST /feed/create", app.feedCreatePost)
+	mux.HandleFunc("GET /feed/create", app.createFeed)
+	mux.HandleFunc("POST /feed/create", app.submitFeed)
 	mux.HandleFunc("GET /feed/view/", app.viewFeed)
 	mux.HandleFunc("GET /feed/delete/", app.deleteFeed)
 	mux.HandleFunc("GET /feeds", app.allFeeds)

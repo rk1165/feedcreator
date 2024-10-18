@@ -28,6 +28,8 @@ type application struct {
 func main() {
 	addr := flag.String("addr", ":8080", "HTTP network address")
 	dbName := flag.String("db", "feeds.db", "SQLite Datasource name")
+	_ = flag.String("path", "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+		"Path to browser for executing dynamic content")
 	flag.Parse()
 
 	db, err := sql.Open("sqlite3", *dbName)
@@ -60,8 +62,9 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	internal.ScheduleFunc(60*time.Second, app.cleanFeeds)
-	internal.ScheduleFunc(90*time.Second, app.updateFeeds)
+	// Schedules cleaning and updating feeds
+	internal.ScheduleFunc(90*time.Minute, app.cleanFeeds)
+	internal.ScheduleFunc(60*time.Minute, app.updateFeeds)
 
 	logger.InfoLog.Printf("Starting server on %s", *addr)
 	err = server.ListenAndServe()

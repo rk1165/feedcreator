@@ -19,34 +19,34 @@ func TestFeedView(t *testing.T) {
 	}{
 		{
 			name:     "Valid ID",
-			urlPath:  "/feed/view/1",
+			urlPath:  "/feed/view?id=1",
 			wantCode: http.StatusOK,
 			wantBody: "Feed for example",
 		},
 		{
 			name:     "Non-existent ID",
-			urlPath:  "/feed/view/2",
+			urlPath:  "/feed/view?id=2",
 			wantCode: http.StatusNotFound,
 		},
 		{
 			name:     "Negative ID",
-			urlPath:  "/feed/view/-1",
-			wantCode: http.StatusNotFound,
+			urlPath:  "/feed/view?id=-1",
+			wantCode: http.StatusBadRequest,
 		},
 		{
 			name:     "Decimal ID",
-			urlPath:  "/feed/view/1.23",
-			wantCode: http.StatusNotFound,
+			urlPath:  "/feed/view?id=1.23",
+			wantCode: http.StatusBadRequest,
 		},
 		{
 			name:     "String ID",
-			urlPath:  "/feed/view/foo",
-			wantCode: http.StatusNotFound,
+			urlPath:  "/feed/view?id=foo",
+			wantCode: http.StatusBadRequest,
 		},
 		{
 			name:     "Empty ID",
-			urlPath:  "/feed/view/",
-			wantCode: http.StatusNotFound,
+			urlPath:  "/feed/view?id=",
+			wantCode: http.StatusBadRequest,
 		},
 	}
 
