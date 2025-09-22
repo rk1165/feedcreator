@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/rk1165/feedcreator/internal/assert"
 	"net/http"
 	"testing"
+
+	"github.com/rk1165/feedcreator/internal/assert"
 )
 
 func TestFeedView(t *testing.T) {

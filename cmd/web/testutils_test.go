@@ -2,9 +2,6 @@ package main
 
 import (
 	"bytes"
-	"github.com/alexedwards/scs/v2"
-	"github.com/go-playground/form/v4"
-	"github.com/rk1165/feedcreator/internal/models/mocks"
 	"io"
 	"log"
 	"net/http"
@@ -13,6 +10,10 @@ import (
 	"net/url"
 	"testing"
 	"time"
+
+	"github.com/alexedwards/scs/v2"
+	"github.com/go-playground/form/v4"
+	"github.com/rk1165/feedcreator/internal/models/mocks"
 )
 
 // newTestApplication returns an instance of our application

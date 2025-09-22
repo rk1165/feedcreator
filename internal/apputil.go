@@ -3,12 +3,13 @@ package internal
 import (
 	"encoding/xml"
 	"fmt"
-	"github.com/rk1165/feedcreator/internal/models"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/rk1165/feedcreator/internal/models"
 )
 
 func ReadRSSFeedFile(feedName string) (*models.RSS, error) {

@@ -2,7 +2,6 @@
 
 - This project aims to turn any website to RSS Feed which we can then subscribe to using RSS readers.
 - This [link](https://www.xul.fr/en-xml-rss.html) explains what are RSS feeds pretty well.
--
 
 ### A little Theory
 

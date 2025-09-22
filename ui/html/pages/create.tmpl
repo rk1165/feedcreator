@@ -18,7 +18,7 @@
         </div>
         <div>
             <label>Description:</label>
-            {{with .Form.FieldErrors.url}}
+            {{with .Form.FieldErrors.description}}
                 <label class="error">{{.}}</label>
             {{end}}
             <input type="text" name="desc" value="{{.Form.Description}}">

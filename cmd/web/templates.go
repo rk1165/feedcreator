@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/rk1165/feedcreator/internal/models"
-	"github.com/rk1165/feedcreator/ui"
 	"html/template"
 	"io/fs"
 	"path/filepath"
 	"time"
+
+	"github.com/rk1165/feedcreator/internal/models"
+	"github.com/rk1165/feedcreator/ui"
 )
 
 // templateData holds any dynamic data that we want to pass to our HTML templates.

@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/rk1165/feedcreator/pkg/logger"
 	"time"
+
+	"github.com/rk1165/feedcreator/pkg/logger"
 )
 
 type FeedModelInterface interface {

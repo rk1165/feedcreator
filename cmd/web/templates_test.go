@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/rk1165/feedcreator/internal/assert"
 	"testing"
 	"time"
+
+	"github.com/rk1165/feedcreator/internal/assert"
 )
 
 func TestHumanDate(t *testing.T) {

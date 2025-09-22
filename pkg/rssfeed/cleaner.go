@@ -1,11 +1,12 @@
 package rssfeed
 
 import (
+	"sync"
+	"time"
+
 	"github.com/rk1165/feedcreator/internal"
 	"github.com/rk1165/feedcreator/internal/models"
 	"github.com/rk1165/feedcreator/pkg/logger"
-	"sync"
-	"time"
 )
 
 func CleanFeeds(feeds []*models.Feed) {

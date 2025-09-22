@@ -1,8 +1,9 @@
 package mocks
 
 import (
-	"github.com/rk1165/feedcreator/internal/models"
 	"time"
+
+	"github.com/rk1165/feedcreator/internal/models"
 )
 
 var mockFeed = &models.Feed{

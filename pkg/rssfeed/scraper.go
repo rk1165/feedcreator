@@ -4,14 +4,15 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/chromedp"
 	"github.com/gocolly/colly"
 	"github.com/rk1165/feedcreator/internal"
 	"github.com/rk1165/feedcreator/internal/models"
 	"github.com/rk1165/feedcreator/pkg/logger"
-	"strings"
-	"time"
 )
 
 const PubDateFormat = "Mon, 02 Jan 2006 15:04:05 GMT"
