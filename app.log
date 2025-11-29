@@ -1,0 +1,26 @@
+INFO:	2025/11/29 12:01:49 Starting server on :8080
+INFO:	2025/11/29 12:01:54 [::1]:59379 - HTTP/1.1 GET /
+INFO:	2025/11/29 12:01:54 [::1]:59379 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:01:54 [::1]:59380 - HTTP/1.1 GET /static/js/main.js
+INFO:	2025/11/29 12:01:55 [::1]:59379 - HTTP/1.1 GET /static/img/favicon.ico
+INFO:	2025/11/29 12:02:14 [::1]:59379 - HTTP/1.1 GET /feeds
+INFO:	2025/11/29 12:02:14 [::1]:59379 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:02:14 [::1]:59380 - HTTP/1.1 GET /static/js/main.js
+INFO:	2025/11/29 12:02:16 [::1]:59379 - HTTP/1.1 GET /feed/create
+INFO:	2025/11/29 12:02:16 [::1]:59379 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:02:16 [::1]:59380 - HTTP/1.1 GET /static/js/main.js
+INFO:	2025/11/29 12:02:31 [::1]:59379 - HTTP/1.1 GET /
+INFO:	2025/11/29 12:02:31 [::1]:59379 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:02:31 [::1]:59380 - HTTP/1.1 GET /static/js/main.js
+INFO:	2025/11/29 12:02:52 [::1]:59379 - HTTP/1.1 GET /
+INFO:	2025/11/29 12:02:52 [::1]:59379 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:02:52 [::1]:59380 - HTTP/1.1 GET /static/js/main.js
+INFO:	2025/11/29 12:03:11 [::1]:59380 - HTTP/1.1 GET /feeds
+INFO:	2025/11/29 12:03:11 [::1]:59380 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:03:11 [::1]:59379 - HTTP/1.1 GET /static/js/main.js
+INFO:	2025/11/29 12:03:12 [::1]:59380 - HTTP/1.1 GET /feed/create
+INFO:	2025/11/29 12:03:12 [::1]:59380 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:03:12 [::1]:59379 - HTTP/1.1 GET /static/js/main.js
+INFO:	2025/11/29 12:03:14 [::1]:59380 - HTTP/1.1 GET /
+INFO:	2025/11/29 12:03:14 [::1]:59380 - HTTP/1.1 GET /static/css/main.css
+INFO:	2025/11/29 12:03:14 [::1]:59379 - HTTP/1.1 GET /static/js/main.js
